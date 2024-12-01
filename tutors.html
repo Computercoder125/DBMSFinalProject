@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnyTimeTutoring</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>AnyTimeTutoring</h1>
+    <div class="container">
+        <h2>Tutors List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tutor ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Signup Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tutors-table">
+                
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Fetch data from database
+        fetch('http://localhost:3000/tutors')
+            .then(response => response.json())
+            .then(data => {
+                const tutorsTable = document.getElementById('tutors-table');
+                
+                // Populate the table with tutor data
+                data.tutors.forEach(tutor => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${tutor.tutor_id}</td>
+                        <td>${tutor.name}</td>
+                        <td>${tutor.email}</td>
+                        <td>${tutor.subject_specialization}</td>
+                        <td>${tutor.signup_date.split('T')[0]}</td>
+                        <td>${tutor.status}</td>
+                    `;
+                    tutorsTable.appendChild(row);
+                });
+            })
+            .catch(err => {
+                console.error('Error fetching data:', err);
+            });
+    </script>
+</body>
+</html>
