@@ -3,83 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnyTimeTutoring</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            text-align: center;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-    </style>
+    <title>Tutors List</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>AnyTimeTutoring</h1>
-    <div class="container">
-        <h2>Tutors List</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Tutor ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Subject</th>
-                    <th>Signup Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="tutors-table">
-                
-            </tbody>
-        </table>
-    </div>
+<body style="font-family:arial">
+
+    <h2>Tutors War List</h2>
+
+    <!-- Add a section to display tutors -->
+    <div id="tutors-container"></div>
 
     <script>
-        // Fetch data from database
+        // Fetch data from the tutors API and display it
         fetch('http://localhost:3000/tutors')
             .then(response => response.json())
             .then(data => {
-                const tutorsTable = document.getElementById('tutors-table');
-                
-                // Populate the table with tutor data
-                data.tutors.forEach(tutor => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${tutor.tutor_id}</td>
-                        <td>${tutor.name}</td>
-                        <td>${tutor.email}</td>
-                        <td>${tutor.subject_specialization}</td>
-                        <td>${tutor.signup_date.split('T')[0]}</td>
-                        <td>${tutor.status}</td>
-                    `;
-                    tutorsTable.appendChild(row);
-                });
+                const tutorsContainer = document.getElementById('tutors-container');
+                const tutors = data.tutors;
+
+                // Check if there are tutors to display
+                if (tutors && tutors.length > 0) {
+                    let tutorsHtml = "<table border='1'><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Subject</th><th>Signup Date</th><th>Status</th></tr></thead><tbody>";
+                    tutors.forEach(tutor => {
+                        tutorsHtml += `
+                            <tr>
+                                <td>${tutor.tutor_id}</td>
+                                <td>${tutor.name}</td>
+                                <td>${tutor.email}</td>
+                                <td>${tutor.subject_specialization}</td>
+                                <td>${tutor.signup_date}</td>
+                                <td>${tutor.status}</td>
+                                <td><button onclick="pickTutor(${tutor.tutor_id})">View Tutor</button></td>
+                            </tr>
+                        `;
+                    });
+                    tutorsHtml += "</tbody></table>";
+                    tutorsContainer.innerHTML = tutorsHtml;
+                } else {
+                    tutorsContainer.innerHTML = "<p>No tutors available.</p>";
+                }
             })
-            .catch(err => {
-                console.error('Error fetching data:', err);
+            .catch(error => {
+                console.error('Error fetching tutors:', error);
+                document.getElementById('tutors-container').innerHTML = "<p>Error fetching tutors data.</p>";
             });
     </script>
+    <div class="container" style="background-color:#f1f1f1">
+        <!-- Cancel button with an onclick event to redirect to the main page -->
+        <button type="button" class="cancelbtn" onclick="goBackToMainPage()">Cancel</button>
+        <span class="psw">Forgot <a href="#">password?</a></span>
+      </div>
+
+      <script>
+        // Function to redirect the user back to the main page when cancel button is clicked
+        function goBackToMainPage() {
+          window.location.href = "/main";  // Redirect to the main page (adjust the URL as needed)
+        }
+      </script>
+
 </body>
 </html>
