@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Appointment</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .container {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+      }
+      .details {
+        margin-bottom: 20px;
+      }
+      .details span {
+        font-weight: bold;
+      }
+      .button-container {
+        display: flex;
+        justify-content: space-between;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button.cancel {
+        background-color: #f44336;
+      }
+      button:hover {
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body style="font-family: arial">
+    <h2>Book Appointment</h2>
+
+    <div class="container" id="appointment-details">
+      <div class="details">
+        <p><span>Tutor Name:</span> <span id="tutor-name">Loading...</span></p>
+        <p>
+          <span>Tutor Email:</span> <span id="tutor-email">Loading...</span>
+        </p>
+        <p>
+          <span>Tutor Subject:</span> <span id="tutor-subject">Loading...</span>
+        </p>
+        <p>
+          <span>Appointment Date:</span>
+          <span id="appointment-date">Loading...</span>
+        </p>
+      </div>
+
+      <div class="button-container">
+        <button onclick="confirmBooking()">Confirm Appointment</button>
+        <button class="cancel" onclick="goBackToMainPage()">Cancel</button>
+      </div>
+    </div>
+
+    <script>
+      // Get query parameters from URL (this assumes tutor details are passed in URL)
+      const urlParams = new URLSearchParams(window.location.search);
+      const tutorName = urlParams.get("name");
+      const tutorEmail = urlParams.get("email");
+      const tutorSubject = urlParams.get("subject");
+      const selectedTutorId = urlParams.get("tutorId");
+
+      if (tutorName && tutorEmail && tutorSubject && selectedTutorId) {
+        // Display tutor information on the page
+        document.getElementById("tutor-name").textContent = tutorName;
+        document.getElementById("tutor-email").textContent = tutorEmail;
+        document.getElementById("tutor-subject").textContent = tutorSubject;
+
+        // Example appointment date (you would set this dynamically)
+        const appointmentDate = new Date();
+        document.getElementById("appointment-date").textContent =
+          appointmentDate.toLocaleString();
+      } else {
+        alert("Error: Missing tutor details");
+        goBackToMainPage();
+      }
+
+      // Confirm booking function
+      function confirmBooking() {
+        fetch("http://localhost:3000/book-appointment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            account_id: 1, // Assume a static user for this example, use dynamic in real application
+            tutor_id: selectedTutorId,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message) {
+              alert(
+                "Booking successful! You have an appointment with " + tutorName
+              );
+              window.location.href = "/appointments"; // Redirect to the appointments page
+            }
+          })
+          .catch((error) => {
+            console.error("Error booking appointment:", error);
+            alert("Error booking appointment.");
+          });
+      }
+
+      // Redirect to the main page if the user cancels
+      function goBackToMainPage() {
+        window.location.href = "/main"; // Redirect to the main page
+      }
+    </script>
+  </body>
+</html>

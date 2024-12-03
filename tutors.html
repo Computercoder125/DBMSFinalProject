@@ -1,31 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tutors List</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body style="font-family:arial">
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
 
-    <h2>Tutors War List</h2>
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 1em 2em;
+        border-radius: 4px;
+        position: relative;
+        text-align: center;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: red;
+        font-size: 1.5em;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body style="font-family: arial">
+    <h2>Tutors List</h2>
 
     <!-- Add a section to display tutors -->
     <div id="tutors-container"></div>
 
-    <script>
-        // Fetch data from the tutors API and display it
-        fetch('http://localhost:3000/tutors')
-            .then(response => response.json())
-            .then(data => {
-                const tutorsContainer = document.getElementById('tutors-container');
-                const tutors = data.tutors;
+    <!-- Popup Modal -->
+    <div id="popup-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2>Book Tutor</h2>
+        <p id="selected-tutor-details">Loading...</p>
+        <button onclick="confirmBooking()">Confirm Booking</button>
+      </div>
+    </div>
 
-                // Check if there are tutors to display
-                if (tutors && tutors.length > 0) {
-                    let tutorsHtml = "<table border='1'><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Subject</th><th>Signup Date</th><th>Status</th></tr></thead><tbody>";
-                    tutors.forEach(tutor => {
-                        tutorsHtml += `
+    <script>
+      let selectedTutorId = null;
+      let currentAccountId = 1; // Example: You would normally get this from the logged-in user's session
+
+      // Fetch data from the tutors table
+      fetch("http://localhost:3000/tutors")
+        .then((response) => response.json())
+        .then((data) => {
+          const tutorsContainer = document.getElementById("tutors-container");
+          const tutors = data.tutors;
+
+          // Check if there are tutors to display
+          if (tutors && tutors.length > 0) {
+            let tutorsHtml =
+              "<table border='1'><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Subject</th><th>Signup Date</th><th>Status</th><th>Action</th></tr></thead><tbody>";
+            tutors.forEach((tutor) => {
+              tutorsHtml += `
                             <tr>
                                 <td>${tutor.tutor_id}</td>
                                 <td>${tutor.name}</td>
@@ -33,33 +77,79 @@
                                 <td>${tutor.subject_specialization}</td>
                                 <td>${tutor.signup_date}</td>
                                 <td>${tutor.status}</td>
-                                <td><button onclick="pickTutor(${tutor.tutor_id})">View Tutor</button></td>
+                                <td><button onclick="showModal(${tutor.tutor_id}, '${tutor.name}', '${tutor.email}')">Book Tutor</button></td>
                             </tr>
                         `;
-                    });
-                    tutorsHtml += "</tbody></table>";
-                    tutorsContainer.innerHTML = tutorsHtml;
-                } else {
-                    tutorsContainer.innerHTML = "<p>No tutors available.</p>";
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching tutors:', error);
-                document.getElementById('tutors-container').innerHTML = "<p>Error fetching tutors data.</p>";
             });
-    </script>
-    <div class="container" style="background-color:#f1f1f1">
-        <!-- Cancel button with an onclick event to redirect to the main page -->
-        <button type="button" class="cancelbtn" onclick="goBackToMainPage()">Cancel</button>
-        <span class="psw">Forgot <a href="#">password?</a></span>
-      </div>
+            tutorsHtml += "</tbody></table>";
+            tutorsContainer.innerHTML = tutorsHtml;
+          } else {
+            tutorsContainer.innerHTML = "<p>No tutors available.</p>";
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching tutors:", error);
+          document.getElementById("tutors-container").innerHTML =
+            "<p>Error fetching tutors data.</p>";
+        });
 
-      <script>
-        // Function to redirect the user back to the main page when cancel button is clicked
-        function goBackToMainPage() {
-          window.location.href = "/main";  // Redirect to the main page (adjust the URL as needed)
+      // Show the modal with tutor details
+      function showModal(tutorId, tutorName, tutorEmail) {
+        selectedTutorId = tutorId; // Store the selected tutor's ID
+        const modal = document.getElementById("popup-modal");
+        const tutorDetails = document.getElementById("selected-tutor-details");
+        tutorDetails.textContent = `Tutor ID: ${tutorId}, Name: ${tutorName}, Email: ${tutorEmail}`;
+        modal.classList.add("active");
+      }
+
+      // Close the modal
+      function closeModal() {
+        const modal = document.getElementById("popup-modal");
+        modal.classList.remove("active");
+      }
+
+      // Function to confirm booking
+      function confirmBooking() {
+        if (!selectedTutorId) {
+          alert("Please select a tutor to book.");
+          return;
         }
-      </script>
 
-</body>
+        // Send the data to the backend using fetch
+        fetch("http://localhost:3000/view", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            account_id: currentAccountId,
+            tutor_id: selectedTutorId,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert("Booking successful!");
+            closeModal();
+          })
+          .catch((error) => {
+            console.error("Error booking appointment:", error);
+            alert("Error booking appointment.");
+          });
+      }
+    </script>
+
+    <div class="container" style="background-color: #f1f1f1">
+      <!-- Cancel button with an onclick event to redirect to the main page -->
+      <button type="button" class="cancelbtn" onclick="goBackToMainPage()">
+        Go Back
+      </button>
+    </div>
+
+    <script>
+      // function to redirect the user back to the main page when cancel button is clicked
+      function goBackToMainPage() {
+        window.location.href = "/main"; // redirect to the main page
+      }
+    </script>
+  </body>
 </html>
