@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>View Appointments</title>
+    <title>Page Not Found - AnyTimeTutoring</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -39,55 +39,45 @@
       }
 
       main {
-        padding: 20px;
         text-align: center;
+        margin-top: 50px;
       }
 
-      .appointments-list {
-        list-style-type: none;
-        padding: 0;
+      h1 {
+        color: red;
       }
 
-      .appointments-list li {
-        background-color: #f4f4f4;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-      }
-
-      .no-appointments {
-        font-size: 18px;
-        color: #ff0000;
-        font-weight: bold;
+      img {
+        width: 100%;
+        height: auto;
+        max-height: 70vh;
+        object-fit: cover;
+        margin-top: 20px;
       }
     </style>
   </head>
   <body>
     <!-- Header and Navigation Bar -->
     <header>
-      <h2>View Your Appointments</h2>
+      <h2>Welcome to AnyTimeTutoring!</h2>
     </header>
 
     <nav>
-      <a href="http://localhost:3000/main">Home</a>
       <a href="http://localhost:3000/tutors-page">View Tutors</a>
+      <a href="http://localhost:3000/login">Log In</a>
+      <a href="http://localhost:3000/signup">Sign Up</a>
       <a href="http://localhost:3000/view">View Appointments</a>
-      <a href="http://localhost:3000/logout">Log Out</a>
     </nav>
 
     <main>
-      <h3>Your Appointments</h3>
-
-      <!-- Appointments List -->
-      <ul class="appointments-list">
-        <!-- Dynamically insert appointments here -->
-        <!-- If no appointments exist, show the message below -->
-
-        <li class="no-appointments">
-          No appointments available at the moment.
-        </li>
-      </ul>
+      <h1>This page doesn't exist &#128532</h1>
+      <p>Sorry, the page you are looking for could not be found.</p>
+      <a href="/">Go back to the homepage</a>
     </main>
+
+    <img
+      src="https://www.sju.edu/sites/default/files/barbelin-aerial-sunrise-3200x1600.jpg"
+      alt="Campus Image"
+    />
   </body>
 </html>

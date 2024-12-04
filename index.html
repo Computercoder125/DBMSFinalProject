@@ -3,38 +3,78 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home - Computer Science Course Catalog at SJU</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Home - AnyTimeTutoring</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: #333;
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+      }
+
+      nav {
+        background-color: #444;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        margin: 0 10px;
+        font-size: 16px;
+      }
+
+      nav a:hover {
+        background-color: #575757;
+        border-radius: 5px;
+      }
+
+      main {
+        text-align: center;
+      }
+
+      img {
+        width: 100%;
+        height: auto;
+        max-height: 70vh;
+        object-fit: cover;
+        margin-top: 20px;
+      }
+    </style>
   </head>
-  <body style="font-family: arial">
-    <h2>Welcome to AnyTimeTutoring!</h2>
-    <img
-      src="https://www.sju.edu/sites/default/files/barbelin-aerial-sunrise-3200x1600.jpg"
-      width="510"
-      alt="Campus Image"
-    />
+  <body>
+    <!-- Header and Navigation Bar -->
+    <header>
+      <h2>Welcome to AnyTimeTutoring!</h2>
+    </header>
 
-    <br /><br />
-
-    <fieldset style="width: 480">
-      <legend><b>Options</b></legend>
-      <br /><br />
-      Search for a tutor: &nbsp;&nbsp;&nbsp;
+    <nav>
+      <a href="http://localhost:3000/main">Home</a>
       <a href="http://localhost:3000/tutors-page">View Tutors</a>
-
-      <br /><br />
-      Log in: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="http://localhost:3000/login">Log In</a>
-
-      <br /><br />
-      Sign Up: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="http://localhost:3000/signup">Sign Up</a>
-
-      <br /><br />
-      View Appointments: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <a href="http://localhost:3000/view">View Appointments</a>
+      <a href="http://localhost:3000/logout">Log Out</a>
+    </nav>
 
-      <br /><br />
-    </fieldset>
+    <main>
+      <img
+        src="https://www.sju.edu/sites/default/files/barbelin-aerial-sunrise-3200x1600.jpg"
+        alt="Campus Image"
+      />
+
+      <div class="dummy-text">
+        <p>Welcome to AnyTimeTutoring.</p>
+        <p>Our mission is to educate the peopele</p>
+        <p>We provide the best tutoring services for students of all levels.</p>
+      </div>
+    </main>
   </body>
 </html>

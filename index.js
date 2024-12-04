@@ -66,6 +66,14 @@ app.get("/signup", function (req, res) {
   readAndServe("./signup.html", res);
 });
 
+// Route for view appointments page (view.html)
+app.get("/view", function (req, res) {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  readAndServe("./view.html", res);
+});
+
 // Route for main page (index.html)
 app.get("/main", function (req, res) {
   if (!req.session.user) {
@@ -76,6 +84,9 @@ app.get("/main", function (req, res) {
 
 // Route to fetch and display tutors
 app.get("/tutors", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
   const sql_query =
     "SELECT tutor_id, name, email, subject_specialization, signup_date, status FROM tutors";
 
@@ -147,7 +158,7 @@ app.post("/signup", (req, res) => {
   // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return res.status(400).send("Invalid email address.");
+    res.redirect("/login");
   }
 
   // Insert into database
@@ -173,8 +184,14 @@ app.get("/logout", (req, res) => {
       console.error(err);
       return res.status(500).send("Error logging out");
     }
-    res.send("Logged out successfully");
+    res.redirect("/login"); // Redirect back to login page
   });
+});
+
+// 404 route for handling unknown URLs
+app.use((req, res) => {
+  res.status(404);
+  readAndServe("./weird.html", res);
 });
 
 // Start the server
