@@ -1,14 +1,26 @@
 const express = require("express");
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const mysql = require("mysql");
+const fs = require("fs");
+
 const app = express();
 const port = 3000;
 
 // Middleware to parse URL-encoded and JSON bodies
-const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Session middleware setup
+app.use(
+  session({
+    secret: "your-secret-key", // Change to a strong secret
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
 // MySQL connection setup
-const mysql = require("mysql");
 const con = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -26,8 +38,6 @@ con.connect(function (err) {
 });
 
 // Static file server setup for serving HTML files
-const fs = require("fs");
-
 function readAndServe(path, res) {
   fs.readFile(path, function (err, data) {
     if (err) {
@@ -39,19 +49,11 @@ function readAndServe(path, res) {
   });
 }
 
-let currentUsername = ""; // Variable to hold the username
-let currentPassword = ""; // Variable to hold the password
-
 // Routes
 
 // Route for homepage (index.html)
 app.get("/", function (req, res) {
-  readAndServe("./login.html", res);
-});
-
-// Route for main page (index.html)
-app.get("/main", function (req, res) {
-  readAndServe("./index.html", res);
+  readAndServe("./start.html", res);
 });
 
 // Route for login page (login.html)
@@ -59,24 +61,20 @@ app.get("/login", function (req, res) {
   readAndServe("./login.html", res);
 });
 
-// Route for login page (login.html)
+// Route for signup page (signup.html)
 app.get("/signup", function (req, res) {
   readAndServe("./signup.html", res);
 });
 
 // Route for main page (index.html)
 app.get("/main", function (req, res) {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
   readAndServe("./index.html", res);
 });
 
-// Route for main page (index.html)
-app.get("/view", function (req, res) {
-  readAndServe("./view.html", res);
-});
-
 // Route to fetch and display tutors
-// Used to grab data from database and turn it into json, to which /tutors-page take info and makes into html
-// We don't need to rely on a js file to render
 app.get("/tutors", (req, res) => {
   const sql_query =
     "SELECT tutor_id, name, email, subject_specialization, signup_date, status FROM tutors";
@@ -87,14 +85,25 @@ app.get("/tutors", (req, res) => {
       res.status(500).json({ error: "Database query failed" });
       return;
     }
-    // Send JSON response
     res.json({ tutors: results });
   });
 });
 
 // Route for tutors page (tutors.html)
 app.get("/tutors-page", function (req, res) {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
   readAndServe("./tutors.html", res);
+});
+
+// Route for profile page
+app.get("/profile", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  const user = req.session.user;
+  res.send(`Welcome ${user.username}`);
 });
 
 // Route to handle login
@@ -111,42 +120,60 @@ app.post("/login", (req, res) => {
 
   con.query(sql_query, [uname, psw], (err, results) => {
     if (err) {
-      // Log specific error to the console
       console.error("Database query failed:", err);
       return res.status(500).send("Database query failed");
     }
 
-    // Check if the user exists
     if (results.length > 0) {
-      // Successful login, save login details in variables
-      currentUsername = uname; // Save username
-      currentPassword = psw; // Save password
-      console.log(uname);
-      console.log(psw);
+      // Successful login, set session data
+      req.session.user = {
+        id: results[0].id,
+        username: uname,
+      };
 
       console.log("Login successful for user:", uname);
       res.redirect("/main"); // Redirect to the main page
     } else {
-      // Invalid credentials
       console.log("Invalid credentials for user:", uname);
       res.redirect("/login"); // Redirect back to login page
     }
   });
 });
 
+// Signup route
 app.post("/signup", (req, res) => {
   const { name, email, psw } = req.body;
 
-  // Save to database (example query)
-  const sql_query =
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).send("Invalid email address.");
+  }
+
+  // Insert into database
+  const sqlQuery =
     "INSERT INTO accounts (name, email, password) VALUES (?, ?, ?)";
-  con.query(sql_query, [name, email, psw], (err, results) => {
+  con.query(sqlQuery, [name, email, psw], (err) => {
     if (err) {
       console.error("Error saving account:", err);
       return res.status(500).send("Error saving account");
     }
 
-    res.send("Account created successfully");
+    // Send a success message and redirect to login
+    res.send(
+      `<script>alert('Account created successfully!'); window.location.href='/login';</script>`
+    );
+  });
+});
+
+// Route to handle logout
+app.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error logging out");
+    }
+    res.send("Logged out successfully");
   });
 });
 
