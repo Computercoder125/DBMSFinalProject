@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up & Log In - AnyTimeTutoring</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      .top-half {
+        flex: 1;
+        background: linear-gradient(135deg, #004d40, #00acc1, #4caf50, #81c784);
+        background-size: 200% 200%;
+        animation: gradientShift 8s infinite;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .top-half h1 {
+        font-size: 3em;
+        margin: 0;
+        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .bottom-half {
+        flex: 1;
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 20px;
+      }
+
+      .button {
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        background: #4caf50;
+        padding: 15px 40px;
+        font-size: 1.2em;
+        font-weight: bold;
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+      }
+
+      .button:hover {
+        background: #388e3c;
+        box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
+        transform: translateY(-3px);
+      }
+    </style>
+  </head>
+  <!-- A splash screen that gives basic info-->
+  <body>
+    <div class="top-half">
+      <h1>Welcome to AnyTimeTutoring</h1>
+    </div>
+    <div class="bottom-half">
+      <div class="buttons">
+        <a class="button" href="http://localhost:3000/login">Log In</a>
+        <a class="button" href="http://localhost:3000/signup">Sign Up</a>
+      </div>
+    </div>
+  </body>
+</html>

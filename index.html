@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home - AnyTimeTutoring</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f9; /* Light background for the body */
+      }
+
+      header {
+        background-color: #2c3e50; /* Darker background */
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      }
+
+      header h2 {
+        font-size: 36px;
+        margin: 0;
+      }
+
+      nav {
+        background-color: #34495e;
+        display: flex;
+        justify-content: center;
+        padding: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        margin: 0 15px;
+        font-size: 18px;
+        border-radius: 30px;
+        transition: background-color 0.3s, transform 0.3s;
+      }
+
+      nav a:hover {
+        background-color: #1abc9c;
+        transform: scale(1.1); /* Add hover scaling effect */
+      }
+
+      main {
+        padding: 30px;
+        text-align: center;
+      }
+
+      img {
+        width: 100%;
+        height: auto;
+        max-height: 70vh;
+        object-fit: cover;
+        margin-bottom: 30px;
+        border-radius: 10px; /* Rounded corners for image */
+      }
+
+      .content-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: left;
+        font-size: 18px;
+        color: #555;
+      }
+
+      .content-container p {
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .content-container h3 {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>Welcome to AnyTimeTutoring!</h2>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav>
+      <a href="http://localhost:3000/main">Home</a>
+      <a href="http://localhost:3000/tutors-page">View Tutors</a>
+      <a href="http://localhost:3000/view-appointment">View Appointments</a>
+      <a href="http://localhost:3000/logout">Log Out</a>
+    </nav>
+
+    <main>
+      <img
+        src="https://www.sju.edu/sites/default/files/barbelin-aerial-sunrise-3200x1600.jpg"
+        alt="Campus Image"
+      />
+
+      <div class="content-container">
+        <h3>About AnyTimeTutoring</h3>
+        <p>Welcome to AnyTimeTutoring.</p>
+        <p>
+          At AnyTimeTutoring, our mission is to empower learners of all ages by
+          providing accessible, personalized, and flexible educational support
+          tailored to their unique needs.
+        </p>
+        <p>
+          We are dedicated to fostering confidence, curiosity, and a love for
+          learning through expert guidance, innovative tools, and 24/7
+          availability.
+        </p>
+        <p>
+          By breaking barriers to education, we strive to unlock every student’s
+          potential and inspire lifelong success.
+        </p>
+        <p>We provide the best tutoring services for students of all levels.</p>
+      </div>
+    </main>
+  </body>
+</html>

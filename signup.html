@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #004d40, #00acc1, #4caf50, #81c784);
+        background-size: 200% 200%;
+        animation: gradientShift 8s infinite;
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      form {
+        border: 3px solid #f1f1f1;
+        padding: 20px;
+        background-color: white;
+        width: 100%;
+        max-width: 400px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+      }
+
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+
+      button {
+        background-color: #04aa6d;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        border-radius: 4px;
+        font-size: 1em;
+      }
+
+      button:hover {
+        opacity: 0.8;
+      }
+
+      .cancelbtn {
+        width: auto;
+        padding: 10px 18px;
+        background-color: #f44336;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+
+      /* Error Box Styles */
+      .error {
+        background-color: #ffe6e6;
+        border: 2px solid #ff4d4d;
+        color: #ff0000;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        text-align: center;
+        max-width: 400px;
+        margin: 20px auto;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sign Up Form -->
+    <form action="/signup" method="post" id="signupForm">
+      <!-- Error box for invalid email or password mismatch -->
+      <div class="error" id="error-message" style="display: none"></div>
+
+      <!-- Make them required so client checks info-->
+      <div class="container">
+        <label for="name"><b>Name</b></label>
+        <input type="text" placeholder="Enter Name" name="name" required />
+
+        <label for="email"><b>Email</b></label>
+        <input type="text" placeholder="Enter Email" name="email" required />
+
+        <label for="psw"><b>Password</b></label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          name="psw"
+          required
+        />
+
+        <label for="psw-repeat"><b>Repeat Password</b></label>
+        <input
+          type="password"
+          placeholder="Repeat Password"
+          name="psw-repeat"
+          required
+        />
+
+        <button type="submit">Sign Up</button>
+      </div>
+      <div class="container-actions">
+        <button
+          type="button"
+          class="cancelbtn"
+          onclick="window.location.href='/'"
+        >
+          Cancel
+        </button>
+    </form>
+
+    <script>
+      // Makes sure inputs are correct
+      document
+        .getElementById("signupForm")
+        .addEventListener("submit", function (event) {
+          const emailInput = document.querySelector('input[name="email"]');
+          const password = document.querySelector('input[name="psw"]').value;
+          const repeatPassword = document.querySelector(
+            'input[name="psw-repeat"]'
+          ).value;
+
+          // Shows/Hides error box
+          const errorMessage = document.getElementById("error-message");
+          errorMessage.style.display = "none"; // Hide error box initially
+          errorMessage.textContent = ""; // Clear error message
+
+          // Validate email format
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(emailInput.value)) {
+            errorMessage.style.display = "block"; // Show error box
+            errorMessage.textContent = "Please enter a valid email address.";
+            emailInput.focus(); // Focus on the email input
+            event.preventDefault(); // Prevent form submission
+            return;
+          }
+
+          // Validate passwords match
+          if (password !== repeatPassword) {
+            errorMessage.style.display = "block"; // Show error box
+            errorMessage.textContent =
+              "Passwords do not match. Please try again.";
+            event.preventDefault(); // Prevent form submission
+            return;
+          }
+        });
+    </script>
+  </body>
+</html>

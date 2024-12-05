@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Appointments</title>
+    <style>
+      /* Add styling as needed */
+    </style>
+  </head>
+  <body>
+    <!-- Header and Navigation Bar -->
+    <header>
+      <h2>View Your Appointments</h2>
+    </header>
+
+    <nav>
+      <a href="/main">Home</a>
+      <a href="/tutors-page">View Tutors</a>
+      <a href="/view-appointment">View Appointments</a>
+      <a href="/logout">Log Out</a>
+    </nav>
+
+    <main>
+      <h3>Your Appointments</h3>
+
+      <!-- Appointments List -->
+      <ul class="appointments-list">
+        <% if (appointments.length === 0) { %>
+        <li class="no-appointments">
+          No appointments available at the moment.
+        </li>
+        <% } else { %> <% appointments.forEach(function(appointment) { %>
+        <li>
+          <strong>Tutor:</strong> <%= appointment.tutor_name %><br />
+          <strong>Subject:</strong> <%= appointment.subject_specialization %><br />
+          <strong>Appointment Date:</strong> <%= appointment.signup_date %>
+        </li>
+        <% }); %> <% } %>
+      </ul>
+    </main>
+  </body>
+</html>

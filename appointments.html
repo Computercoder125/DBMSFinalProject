@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Appointments</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f9;
+      }
+
+      header {
+        background-color: #2c3e50;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 36px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      nav {
+        background-color: #34495e;
+        display: flex;
+        justify-content: center;
+        padding: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        margin: 0 15px;
+        font-size: 18px;
+        border-radius: 30px;
+        transition: background-color 0.3s, transform 0.3s;
+      }
+
+      nav a:hover {
+        background-color: #1abc9c;
+        transform: scale(1.1);
+      }
+
+      main {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 30px;
+        background-color: white;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 28px;
+        color: #333;
+      }
+
+      #appointments {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .appointment {
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        background-color: #f7f7f7;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .appointment p {
+        margin: 5px 0;
+        line-height: 1.5;
+        color: #555;
+      }
+
+      .appointment p strong {
+        color: #388e3c;
+      }
+
+      .error {
+        color: red;
+        font-size: 18px;
+      }
+
+      .loading {
+        font-size: 18px;
+        color: #555;
+      }
+
+      .cancel-btn {
+        background-color: #f44336;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .cancel-btn:hover {
+        background-color: #e53935;
+      }
+
+      .info-text {
+        margin-top: 20px;
+        font-size: 16px;
+        color: #555;
+      }
+    </style>
+    <script>
+      // Make sure we load the file once it's fully rendered
+      document.addEventListener("DOMContentLoaded", async () => {
+        const appointmentsContainer = document.getElementById("appointments");
+
+        try {
+          const response = await fetch("/api/appointments");
+          if (!response.ok) {
+            throw new Error("Failed to fetch appointments");
+          }
+
+          const data = await response.json();
+
+          // Check if there are appointments
+          if (data.appointments.length === 0) {
+            appointmentsContainer.innerHTML =
+              "<p class='loading'>No appointments found.</p>";
+          } else {
+            data.appointments.forEach((appointment) => {
+              const div = document.createElement("div");
+              div.classList.add("appointment");
+
+              div.innerHTML = `
+                <p><strong>Tutor:</strong> ${appointment.tutor_name}</p>
+                <p><strong>Subject:</strong> ${
+                  appointment.subject_specialization
+                }</p>
+                <p><strong>Date:</strong> ${new Date(
+                  appointment.appointment_date
+                ).toLocaleDateString()}</p>
+                <button class="cancel-btn" data-appointment-id="${
+                  appointment.appointment_id
+                }">Cancel Appointment</button>
+              `;
+
+              // Allows user to cancel appointment
+              const cancelButton = div.querySelector(".cancel-btn");
+              cancelButton.addEventListener("click", async (e) => {
+                const appointmentId = e.target.getAttribute(
+                  "data-appointment-id"
+                );
+
+                try {
+                  const deleteResponse = await fetch(
+                    `/api/appointments/${appointmentId}`,
+                    {
+                      method: "DELETE",
+                    }
+                  );
+
+                  // Actually removes from interface
+                  if (deleteResponse.ok) {
+                    alert("Appointment canceled successfully");
+                    div.remove(); // Remove the appointment from the UI
+                  } else {
+                    const errorData = await deleteResponse.json();
+                    alert(`Error: ${errorData.error}`);
+                  }
+                } catch (error) {
+                  console.error(error);
+                  alert("Error canceling appointment. Please try again later.");
+                }
+              });
+
+              appointmentsContainer.appendChild(div);
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          appointmentsContainer.innerHTML =
+            "<p class='error'>Error loading appointments. Please try again later.</p>";
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <header>Your Appointments</header>
+
+    <!-- Navigation Bar -->
+    <nav>
+      <a href="http://localhost:3000/main">Home</a>
+      <a href="http://localhost:3000/tutors-page">View Tutors</a>
+      <a href="http://localhost:3000/view-appointment">View Appointments</a>
+      <a href="http://localhost:3000/logout">Log Out</a>
+    </nav>
+
+    <main>
+      <h1>Appointment Details</h1>
+
+      <!-- Additional Info Text -->
+      <p class="info-text">
+        You may have an appointment at any time from 10:00 AM to 8:00 PM. Just
+        walk in with your appointment details. The appointment office is located
+        at 123 City Street.
+      </p>
+
+      <div id="appointments">
+        <p class="loading"></p>
+      </div>
+    </main>
+  </body>
+</html>
