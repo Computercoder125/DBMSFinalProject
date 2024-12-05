@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Appointments</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: #333;
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+      }
+
+      nav {
+        background-color: #444;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        margin: 0 10px;
+        font-size: 16px;
+      }
+
+      nav a:hover {
+        background-color: #575757;
+        border-radius: 5px;
+      }
+
+      main {
+        padding: 20px;
+        text-align: center;
+      }
+
+      .appointments-list {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .appointments-list li {
+        background-color: #f4f4f4;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+
+      .no-appointments {
+        font-size: 18px;
+        color: #ff0000;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header and Navigation Bar -->
+    <header>
+      <h2>View Your Appointments</h2>
+    </header>
+
+    <nav>
+      <a href="http://localhost:3000/main">Home</a>
+      <a href="http://localhost:3000/tutors-page">View Tutors</a>
+      <a href="http://localhost:3000/view">View Appointments</a>
+      <a href="http://localhost:3000/contacts">Contacts</a>
+      <a href="http://localhost:3000/logout">Log Out</a>
+    </nav>
+
+    <main>
+      <h3>Your Appointments</h3>
+
+      <!-- Appointments List -->
+      <ul class="appointments-list">
+        <!-- Dynamically insert appointments here -->
+        <!-- If no appointments exist, show the message below -->
+
+        <li class="no-appointments">
+          No appointments available at the moment.
+        </li>
+      </ul>
+    </main>
+  </body>
+</html>

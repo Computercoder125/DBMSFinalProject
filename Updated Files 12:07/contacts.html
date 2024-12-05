@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contacts - AnyTimeTutoring</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    }
+
+        header {
+      background-color: #333;
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+    }
+    
+    nav {
+      background-color: #444;
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      margin: 0 10px;
+      font-size: 16px;
+    }
+    
+    nav a:hover {
+      background-color: #575757;
+      border-radius: 5px;
+    }
+    
+    main {
+      text-align: center;
+    }
+
+
+    .bottom-half {
+  display: flex;
+  flex-direction: row;
+}
+
+.left-column {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.contacts {
+  margin-top: 20px;
+}
+
+.contacts h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.contact-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.contact-list li {
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+    </style>
+  </head>
+  <body>
+    <header>
+        <h2>AnyTimeTutoring Contacts</h2>
+      </header>
+  
+      <nav>
+        <a href="http://localhost:3000/main">Home</a>
+        <a href="http://localhost:3000/tutors-page">View Tutors</a>
+        <a href="http://localhost:3000/view">View Appointments</a>
+        <a href="http://localhost:3000/contacts">Contacts</a>
+        <a href="http://localhost:3000/logout">Log Out</a>
+      </nav>
+
+    <div class="bottom-half">
+        <div class="left-column">
+            <div class="contacts">
+              <h2>Contacts:</h2>
+              <h2>Support:</h2>
+              <ul class="contact-list">
+                <li>Email: support@AnyTimeTutoring.com</li>
+                <li>Phone: +1 (555) 123-4567</li>
+              </ul>
+              <h2>Main Office:</h2>
+              <ul class="contact-list">
+                <li>Email: office@AnyTimeTutoring.com</li>
+                <li>Phone: +1 (555) 765-4321</li>
+              </ul>
+            </div>
+      </div>
+    </div>
+  </body>
+</html>
