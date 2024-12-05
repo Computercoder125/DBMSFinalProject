@@ -1,18 +1,30 @@
 const express = require("express");
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const mysql = require("mysql");
+const fs = require("fs");
+
 const app = express();
 const port = 3000;
 
 // Middleware to parse URL-encoded and JSON bodies
-const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Session middleware setup
+app.use(
+  session({
+    secret: "your-secret-key", // Change to a strong secret
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
 // MySQL connection setup
-const mysql = require("mysql");
 const con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Bacca101", // Use your MySQL root password
+  password: "Computergeek27!", // Use your MySQL root password
   database: "dbmsproject", // Use your database
 });
 
@@ -26,8 +38,6 @@ con.connect(function (err) {
 });
 
 // Static file server setup for serving HTML files
-const fs = require("fs");
-
 function readAndServe(path, res) {
   fs.readFile(path, function (err, data) {
     if (err) {
@@ -39,19 +49,11 @@ function readAndServe(path, res) {
   });
 }
 
-let currentUsername = ""; // Variable to hold the username
-let currentPassword = ""; // Variable to hold the password
-
 // Routes
 
 // Route for homepage (index.html)
 app.get("/", function (req, res) {
-  readAndServe("./login.html", res);
-});
-
-// Route for main page (index.html)
-app.get("/main", function (req, res) {
-  readAndServe("./index.html", res);
+  readAndServe("./start.html", res);
 });
 
 // Route for login page (login.html)
@@ -59,25 +61,56 @@ app.get("/login", function (req, res) {
   readAndServe("./login.html", res);
 });
 
-// Route for login page (login.html)
+// Route for signup page (signup.html)
 app.get("/signup", function (req, res) {
   readAndServe("./signup.html", res);
 });
 
+// Route for view appointments page (view.html)
+app.get("/view", (req, res) => {
+  if (!req.session?.user) {
+    return res.redirect("/login");
+  }
+
+  const account_id = req.session.user.account_id;
+
+  if (!account_id) {
+    return res.status(400).json({ error: "User not logged in" });
+  }
+
+  const sql_query = `
+    SELECT 
+      appointments.appointment_id, 
+      tutors.name AS tutor_name 
+    FROM appointments
+    INNER JOIN tutors ON appointments.tutor_id = tutors.tutor_id
+    WHERE appointments.account_id = ?
+  `;
+
+  con.query(sql_query, [account_id], (err, results) => {
+    if (err) {
+      console.error("Database query failed:", err);
+      return res.status(500).json({ error: "Failed to fetch appointments" });
+    }
+
+    // Render the HTML page and pass the appointment data
+    readAndServe("./view.html", res, { appointments: results });
+  });
+});
+
 // Route for main page (index.html)
 app.get("/main", function (req, res) {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
   readAndServe("./index.html", res);
 });
 
-// Route for main page (index.html)
-app.get("/view", function (req, res) {
-  readAndServe("./view.html", res);
-});
-
 // Route to fetch and display tutors
-// Used to grab data from database and turn it into json, to which /tutors-page take info and makes into html
-// We don't need to rely on a js file to render
 app.get("/tutors", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
   const sql_query =
     "SELECT tutor_id, name, email, subject_specialization, signup_date, status FROM tutors";
 
@@ -87,14 +120,25 @@ app.get("/tutors", (req, res) => {
       res.status(500).json({ error: "Database query failed" });
       return;
     }
-    // Send JSON response
     res.json({ tutors: results });
   });
 });
-
+    
 // Route for tutors page (tutors.html)
 app.get("/tutors-page", function (req, res) {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
   readAndServe("./tutors.html", res);
+});
+
+// Route for profile page
+app.get("/profile", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  const user = req.session.user;
+  res.send(`Welcome ${user.username}`);
 });
 
 // Route to handle login
@@ -111,43 +155,184 @@ app.post("/login", (req, res) => {
 
   con.query(sql_query, [uname, psw], (err, results) => {
     if (err) {
-      // Log specific error to the console
       console.error("Database query failed:", err);
       return res.status(500).send("Database query failed");
     }
 
-    // Check if the user exists
     if (results.length > 0) {
-      // Successful login, save login details in variables
-      currentUsername = uname; // Save username
-      currentPassword = psw; // Save password
-      console.log(uname);
-      console.log(psw);
+      // Successful login, set session data
+      req.session.user = {
+        id: results[0].id,
+        username: uname,
+      };
 
       console.log("Login successful for user:", uname);
       res.redirect("/main"); // Redirect to the main page
     } else {
-      // Invalid credentials
       console.log("Invalid credentials for user:", uname);
       res.redirect("/login"); // Redirect back to login page
     }
   });
 });
+/** 
+app.post("/view", (req, res) => {
+    // Ensure currentUsername is properly set
+    const uname = req.session?.user?.name;
+    if (!uname) {
+      return res.status(400).json({ error: "User not logged in" });
+    }
 
+    // Query to fetch appointments for the current user
+    const sql_query = `
+      select * from appointments
+inner join accounts on appointments.account_id = accounts.account_id
+where accounts.name = ?
+    `;
+  
+    // Execute the query
+    con.query(sql_query, [uname], (err, results) => {
+      if (err) {
+        console.error("Database query failed:", err);
+        return res.status(500).json({ error: "Database query failed" });
+      }
+  
+      // Send appointments as a JSON response
+      res.json({ appointments: results });
+    });
+  });
+  */
+  /** 
+  app.post("/login", (req, res) => {
+  const { uname, psw } = req.body;
+
+  if (!uname || !psw) {
+    return res.status(400).send("Email and password are required");
+  }
+
+  const sql_query = `SELECT account_id, name FROM accounts WHERE email = ? AND password = ?`;
+
+  con.query(sql_query, [uname, psw], (err, results) => {
+    if (err) {
+      console.error("Database query failed:", err);
+      return res.status(500).send("Database query failed");
+    }
+
+    if (results.length > 0) {
+      // Successful login
+      req.session.user = {
+        account_id: results[0].account_id,
+        name: results[0].name,
+      };
+
+      console.log("Login successful for user:", uname);
+      res.redirect("/main");
+    } else {
+      // Invalid credentials
+      res.redirect("/login");
+    }
+  });
+});
+*/
+app.post("/login", (req, res) => {
+    const { uname, psw } = req.body;
+  
+    if (!uname || !psw) {
+      return res.status(400).send("Email and password are required");
+    }
+  
+    const sql_query = `SELECT account_id, name FROM accounts WHERE email = ? AND password = ?`;
+  
+    con.query(sql_query, [uname, psw], (err, results) => {
+      if (err) {
+        console.error("Database query failed:", err);
+        return res.status(500).send("Database query failed");
+      }
+  
+      if (results.length > 0) {
+        // Successful login
+        req.session.user = {
+          account_id: results[0].account_id,
+          name: results[0].name,
+        };
+  
+        console.log("Login successful for user:", uname);
+        res.redirect("/main");
+      } else {
+        // Invalid credentials
+        res.redirect("/login");
+      }
+    });
+  });
+  
+  app.post("/view", (req, res) => {
+    // Access account_id from session
+    const account_id = req.session?.user?.account_id;
+  
+    if (!account_id) {
+      return res.status(400).json({ error: "User not logged in" });
+    }
+  
+    const { tutor_id } = req.body;
+  
+    if (!tutor_id) {
+      return res.status(400).json({ error: "Missing tutor_id" });
+    }
+  
+    const sql_query = `
+      INSERT INTO appointments (account_id, tutor_id)
+      VALUES (?, ?)
+    `;
+  
+    con.query(sql_query, [account_id, tutor_id], (err, results) => {
+      if (err) {
+        console.error("Database query failed:", err);
+        return res.status(500).json({ error: "Failed to book appointment" });
+      }
+      res.json({ message: "Appointment booked successfully", results });
+    });
+  });
+  
+// Signup route
 app.post("/signup", (req, res) => {
   const { name, email, psw } = req.body;
 
-  // Save to database (example query)
-  const sql_query =
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    res.redirect("/login");
+  }
+
+  // Insert into database
+  const sqlQuery =
     "INSERT INTO accounts (name, email, password) VALUES (?, ?, ?)";
-  con.query(sql_query, [name, email, psw], (err, results) => {
+  con.query(sqlQuery, [name, email, psw], (err) => {
     if (err) {
       console.error("Error saving account:", err);
       return res.status(500).send("Error saving account");
     }
 
-    res.send("Account created successfully");
+    // Send a success message and redirect to login
+    res.send(
+      `<script>alert('Account created successfully!'); window.location.href='/login';</script>`
+    );
   });
+});
+
+// Route to handle logout
+app.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error logging out");
+    }
+    res.redirect("/login"); // Redirect back to login page
+  });
+});
+
+// 404 route for handling unknown URLs
+app.use((req, res) => {
+  res.status(404);
+  readAndServe("./weird.html", res);
 });
 
 // Start the server
