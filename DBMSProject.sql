@@ -16,7 +16,7 @@ CREATE TABLE accounts (
     email VARCHAR(100) UNIQUE,
     password VARCHAR(100)
 );
-
+ -
 CREATE TABLE appointments (
     appointment_id INT PRIMARY KEY, -- a person can have several appointments with the same tutor, need to distinguish
     account_id INT, -- foreign keys so that we know which account is with which tutor
@@ -55,3 +55,4 @@ INSERT INTO accounts (account_id, name, email, password) VALUES
 (9, 'Grace Anderson', 'grace.anderson@example.com', 'password901'),
 (10, 'Hannah Thomas', 'hannah.thomas@example.com', 'password012');
 
+--No insert statements for the appointments table as there are no appointments made initially. They get added as users book sessions with tutors.
