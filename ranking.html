@@ -1,0 +1,30 @@
+<!-- Sean Gor, Brennan Duff, and Kenny Chau
+
+DBMS Final Project Report
+
+9 December 2024
+
+For our final project, we implemented an online tutoring system called AnyTimeTutoring. Some of the features included an about page, login and signup pages, and the ability to book, search for, and cancel an appointment. This idea was inspired by the Writing center and Peer tutor websites of this university. The backend server was made in Node.Js, and the layout of all pages was done in HTML and CSS. All of the data was made and organized into tables using SQL. 
+
+Format:
+Member 1: Sean Gor
+My teammates and I agree that I would handle 33 % of the overall project. 
+Task 1: I designed most of the Javascript code (in the index.js file). I started by using require statements such as const express = require("express"), const session = require("express-session"), and const bodyParser = require("body-parser") to invoke the necessary methods I would need for connecting the client to the server successfully.  I also designed the background style for the main page in a file called main.html. Finally, I created the tutor, students and bookings tables in SQL.
+Task 2: I wrote most of the get and post methods. I also wrote the function readandserve() which reads all the html files needed to style all the webpages. 
+Task 3: I researched how to change the color of different parts of the page (ie. background , shadow, etc.) Since I have not coded in html for a while, I did have to play around with the syntax and coloring until I achieved a stylish and appealing pattern.  I also looked up how to change font sizes, bold and italicize text, and align text in a certain manner. 
+Task 4: I integrated some SQL Data tables (ie. tutor and appointment) into the backend of the server so I could get and post any necessary data with Node.js. For example, in the javascript code, I would use an insert statement to insert the user’s unique id, the unique appointment id, and the tutor name into the appointment database to add that record to the appointments table, and so that it would be displayed on the appointments webpage. In addition, I wrote a select statement for a user to search all booked appointments by that user only.
+
+Member 2: Kenny Chau
+My teammates and I agree that I handled 35% of the overall project. 
+Task 1: Designed the appointment html so that it showed what accounts had what appointments. I created a get method that got data from the database and turned it into a JSON file.  Afterwards, I use a post method that displays the JSON data as an html file could be displayed. I made sure to only get data from the account provided from the login page and that it can only be accessed if the user was logged in. Made the design of each appointment aesthetically pleasing to look at with a box for each appointment.
+Task 2: Created the delete function for appointments so that users can delete appointments. Used a SQL that deleted the appointments from a delete method in the index.js file. A cancel button is on the appointments so that users can click it to delete an appointment. 
+Task 3: Developed the tutor page to show what tutors were available. Similar to the appointments page, I had to create a get method that retrieved data from the database as a JSON file and then display the data through an html file. I made the booking so that only within the same week could an appointment be booked. Also created the search bar to search by the subject by using a SQL query that looked for the tutor’s specialization. 
+Task 4: Created a 404 error page called weird.html that redirects users to a “page not available” if a user would input a route that did not exist. The error page had some text telling the user that the web page does not exist and allowed the user to return to the start html page to properly log in.  
+Task 5: Created the navigation bar at the top that redirected the user to pages that they wanted to go to. I used the index.js and selected only routes that had html files that could be displayed to the user. The design was based on the design created by Sean and research of basic navigation bars I found online. The user can only use the navigation bar if they were signed into the website.
+
+Member 3: Brennan Duff: 
+My teammates and I agree that I handled 32% of the overall project. 
+Task 1: login page: The login page takes a user entered email and password and checks them with the database using a sql query. If the query is successful and the user exists in the database, the user is signed in and a session is started for the account. Without the session, the page automatically redirects to the login page.
+Task 2: signup page: The signup page takes a user entered name, email, and password. The email is checked to verify that it is in the correct email format, and then all of the user information is inserted into the database using a sql query. Upon success, the user is redirected to the login page.
+Task 3: log out: the log out function terminates the user session. Without the session active, the user is automatically redirected to the login page.
+-->
