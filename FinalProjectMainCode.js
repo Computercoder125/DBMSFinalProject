@@ -1,3 +1,8 @@
+//Sean Gor, Brennan Duff, and Kenny Chau
+//Database Management Systems
+//9 December 2024
+Final Project Javacript Code
+
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
